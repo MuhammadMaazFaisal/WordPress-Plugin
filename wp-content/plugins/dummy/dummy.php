@@ -5,8 +5,9 @@
 /*
 Plugin Name: Dummy Plugin
 Plugin URI: https://webnaura.com
-Description: This is just a dummy plugin, which I'm creating for practice 
+Short Description: This is just a dummy plugin, which I'm creating for practice 
 Version: 1.0
+php version:7.4
 Author: Muhammad Maaz
 Author URI: https://webnaura.com/Muhammad-Maaz
 License: GPLv2 or later
@@ -30,3 +31,55 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 Copyright 2005-2022 Automattic, Inc.
 */
+
+//-----------------------------------New Section--------------------------------------------------------
+// To Check if Wordpress is accessing it or not, abspath is created by wordpress in the background
+// if (! defined('ABSPATH')){
+//     die;
+// }
+
+// defined('ABSPATH') or die("You can't access this");
+
+if (! function_exists("add_action")){
+    die;
+}
+
+//-----------------------------------New Section-------------------------------------------------------- 
+
+class Dummy{
+    function __construct()
+    {
+        add_action( 'init',array( $this, 'custom_post_type'));
+    }
+
+    function activation(){
+        $this->custom_post_type();
+       flush_rewrite_rules();
+    }
+
+    function deactivation(){
+        flush_rewrite_rules(); 
+    }
+
+    // static function uninstall(){
+        
+    // }
+
+    function custom_post_type(){
+        register_post_type( "Dummy", ['public' => true, 'label'=> "Dummy"] );
+    }
+}
+
+if (class_exists("Dummy")){
+    $dummyobj=new Dummy();
+}
+
+//Activation
+register_activation_hook( __FILE__, array($dummyobj,'activation') );
+
+//Deactivation
+register_deactivation_hook( __FILE__, array($dummyobj,'deactivation') );
+
+//Uninstall
+
+register_uninstall_hook( __FILE__, array($dummyobj,'uninstall') );
